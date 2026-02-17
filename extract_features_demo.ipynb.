@@ -1,0 +1,115 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Extract Features Model Demo\n",
+    "This notebook demonstrates how to use a pre-trained VGG16 model to extract features from a test image and visualize the results."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "metadata": {},
+   "source": [
+    "# Import necessary libraries\n",
+    "import tensorflow as tf\n",
+    "from tensorflow.keras.applications import VGG16\n",
+    "from tensorflow.keras.preprocessing import image\n",
+    "from tensorflow.keras.applications.vgg16 import preprocess_input\n",
+    "import matplotlib.pyplot as plt\n",
+    "import numpy as np"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 1. Load the pre-trained VGG16 model (without top layers)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "metadata": {},
+   "source": [
+    "extract_feat_model = VGG16(weights='imagenet', include_top=False)\n",
+    "extract_feat_model.summary()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2. Load and preprocess the test image"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "metadata": {},
+   "source": [
+    "# Replace 'test_image.jpg' with your uploaded image file\n",
+    "img_path = 'test_image.jpg'\n",
+    "img = image.load_img(img_path, target_size=(224, 224))\n",
+    "x = image.img_to_array(img)\n",
+    "x = np.expand_dims(x, axis=0)\n",
+    "x = preprocess_input(x)\n",
+    "\n",
+    "# Display the original image\n",
+    "plt.imshow(img)\n",
+    "plt.title('Original Test Image')\n",
+    "plt.axis('off')\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 3. Extract features using the model"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "metadata": {},
+   "source": [
+    "features = extract_feat_model.predict(x)\n",
+    "print('Shape of extracted features:', features.shape)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 4. Visualize some feature maps"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "metadata": {},
+   "source": [
+    "# Visualize first 16 feature maps from the first layer\n",
+    "feature_maps = features[0]\n",
+    "plt.figure(figsize=(12, 12))\n",
+    "for i in range(16):\n",
+    "    plt.subplot(4, 4, i+1)\n",
+    "    plt.imshow(feature_maps[:, :, i], cmap='viridis')\n",
+    "    plt.axis('off')\n",
+    "plt.suptitle('First 16 Feature Maps from Extract Features Model')\n",
+    "plt.show()"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "name": "python",
+   "version": "3.12"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
